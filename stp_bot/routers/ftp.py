@@ -22,6 +22,6 @@ async def ftp(message: types.Message,
         return None
     document = BufferedInputFile(backup_file.content.encode('utf-8'),
                                  filename=backup_file.filename)
-    modify_time = backup_file.modify_time.isoformat()
+    modify_time = str(backup_file.modify_time)
     modify_time = 'Modified at ' + modify_time
     await message.answer_document(document=document, caption=modify_time)
