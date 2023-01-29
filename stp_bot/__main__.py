@@ -10,7 +10,7 @@ import asyncio
 logging.basicConfig(level=logging.INFO)
 
 
-ENV_VAR_PREFIX = 'ZTPBOT_'
+ENV_VAR_PREFIX = 'STPBOT_'
 
 
 parser = ArgumentParser(
