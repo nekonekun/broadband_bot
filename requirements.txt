@@ -1,0 +1,4 @@
+ConfigArgParse~=1.5.3
+setproctitle==1.3.2
+setuptools==67.0.0
+aiogram==3.0.0b4
