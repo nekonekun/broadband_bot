@@ -28,21 +28,20 @@ class FTPHelper:
 
     async def get_backup_file(self, ip: str) -> BackupFile | None:
         filename = f'{ip}.cfg'
-        filepath = self.folder + filename
         async with aioftp.Client.context(host=self.host,
                                          user=self.username,
                                          password=self.password,
                                          connection_timeout=5) as client:
-            if await client.exists(filepath):
-                ls = await client.list(self.folder)
-                ls = {file[0].name: file[1] for file in ls}
-                modify_time = ls[filename]['modify']
-                modify_time = datetime.datetime.strptime(modify_time,
-                                                         '%Y%m%d%H%M%S')
-                content = ''
-                async with client.download_stream(filepath) as stream:
-                    async for block in stream.iter_by_block():
-                        content += block.decode('utf-8')
-                return BackupFile(filename, modify_time, content)
-            else:
+            if self.folder:
+                await client.change_directory(self.folder)
+            file_info = await client.list(filename)
+            if not file_info:
                 return None
+            path, info = file_info[0]
+            modify_time = datetime.datetime.strptime(info['modify'],
+                                                     '%Y%m%d%H%M%S')
+            content = ''
+            async with client.download_stream(filename) as stream:
+                async for block in stream.iter_by_block():
+                    content += block.decode('utf-8')
+            return BackupFile(filename, modify_time, content)
