@@ -19,10 +19,11 @@ class FTPHelper:
         self.host: str = host
         self.username: str = username
         self.password: str = password
-        if not folder.startswith('/'):
-            folder = '/' + folder
-        if not folder.endswith('/'):
-            folder = folder + '/'
+        if folder:
+            if not folder.startswith('/'):
+                folder = '/' + folder
+            if not folder.endswith('/'):
+                folder = folder + '/'
         self.folder = folder
 
     async def get_backup_file(self, ip: str) -> BackupFile | None:
