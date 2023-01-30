@@ -49,5 +49,6 @@ async def bot_main(token: str, ftp_helper: FTPHelper):
     dp = Dispatcher(storage=MemoryStorage())
 
     dp.include_router(routers.ftp_router)
+    dp.include_router(routers.alive_router)
 
     await dp.start_polling(bot, ftp_helper=ftp_helper)
