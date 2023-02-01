@@ -9,6 +9,8 @@ import asyncio
 
 import stp_bot.routers as routers
 from stp_bot.services.ftp import FTPHelper
+from stp_bot.services.userside import UsersideAPI
+from stp_bot.services.alive import AliveHelper
 
 logging.basicConfig(level=logging.INFO)
 
@@ -32,6 +34,12 @@ group.add_argument('--ftp-password', help='FTP password', required=True)
 group.add_argument('--ftp-folder', help='FTP folder', required=True)
 
 
+group = parser.add_argument_group('Userside')
+group.add_argument('--userside-url',
+                   help='Userside API URL (including api.php)', required=True)
+group.add_argument('--userside-key', help='Userside API key', required=True)
+
+
 def main():
     args = parser.parse_args()
     token = args.token
@@ -40,15 +48,25 @@ def main():
     ftp_password = args.ftp_password
     ftp_folder = args.ftp_folder
     ftp_helper = FTPHelper(ftp_host, ftp_username, ftp_password, ftp_folder)
+    userside_url = args.userside_url
+    userside_key = args.userside_key
+    userside_api = UsersideAPI(userside_url, userside_key)
+    alive_helper = AliveHelper(userside_api)
     setproctitle(os.path.basename(sys.argv[0]))
-    asyncio.run(bot_main(token=token, ftp_helper=ftp_helper))
+    asyncio.run(bot_main(token=token,
+                         ftp_helper=ftp_helper,
+                         alive_helper=alive_helper))
 
 
-async def bot_main(token: str, ftp_helper: FTPHelper):
+async def bot_main(token: str,
+                   ftp_helper: FTPHelper,
+                   alive_helper: AliveHelper):
     bot = Bot(token=token, parse_mode='html')
     dp = Dispatcher(storage=MemoryStorage())
 
     dp.include_router(routers.ftp_router)
     dp.include_router(routers.alive_router)
 
-    await dp.start_polling(bot, ftp_helper=ftp_helper)
+    await dp.start_polling(bot,
+                           ftp_helper=ftp_helper,
+                           alive_helper=alive_helper)
