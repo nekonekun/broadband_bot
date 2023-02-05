@@ -87,6 +87,7 @@ async def bot_main(token: str,
     dp.include_router(routers.usage_router)
 
     dp.message.middleware(middlewares.ChatActionMiddleware())
+    dp.message.middleware(middlewares.LoggingMiddleware())
 
     await dp.start_polling(bot,
                            ftp_helper=ftp_helper,

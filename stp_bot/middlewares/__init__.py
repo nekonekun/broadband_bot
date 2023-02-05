@@ -1,1 +1,2 @@
 from stp_bot.middlewares.chat_action import ChatActionMiddleware
+from stp_bot.middlewares.log import LoggingMiddleware
