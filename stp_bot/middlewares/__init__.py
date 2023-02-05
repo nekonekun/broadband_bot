@@ -1,0 +1,1 @@
+from stp_bot.middlewares.chat_action import ChatActionMiddleware

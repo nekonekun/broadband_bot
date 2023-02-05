@@ -7,7 +7,9 @@ from stp_bot.services.ftp import FTPHelper
 router = Router()
 
 
-@router.message(commands=['ftp'], state=None)
+@router.message(commands=['ftp'],
+                state=None,
+                flags={'long_operation': 'upload_document'})
 async def ftp(message: types.Message,
               command: CommandObject,
               ftp_helper: FTPHelper):

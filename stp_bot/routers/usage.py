@@ -4,7 +4,9 @@ from stp_bot.services.usage import UsageHelper
 router = Router()
 
 
-@router.message(commands=['usage'], state=None)
+@router.message(commands=['usage'],
+                state=None,
+                flags={'long_operation': 'typing'})
 async def usage(message: types.Message,
                 command: CommandObject,
                 usage_helper: UsageHelper):

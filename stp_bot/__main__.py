@@ -8,6 +8,7 @@ import logging
 import asyncio
 
 import stp_bot.routers as routers
+import stp_bot.middlewares as middlewares
 from stp_bot.services.ftp import FTPHelper
 from stp_bot.services.userside import UsersideAPI
 from stp_bot.services.alive import AliveHelper
@@ -84,6 +85,8 @@ async def bot_main(token: str,
     dp.include_router(routers.ftp_router)
     dp.include_router(routers.alive_router)
     dp.include_router(routers.usage_router)
+
+    dp.message.middleware(middlewares.ChatActionMiddleware())
 
     await dp.start_polling(bot,
                            ftp_helper=ftp_helper,

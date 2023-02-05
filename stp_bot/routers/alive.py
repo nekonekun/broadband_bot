@@ -4,7 +4,9 @@ from stp_bot.services.alive import AliveHelper
 router = Router()
 
 
-@router.message(commands=['aliveplus'], state=None)
+@router.message(commands=['aliveplus'],
+                state=None,
+                flags={'long_operation': 'typing'})
 async def alive_plus(message: types.Message,
                      command: CommandObject,
                      alive_helper: AliveHelper):
@@ -35,7 +37,9 @@ async def alive_plus(message: types.Message,
     await message.answer(text=ip + '\n' + header + '\n' + body)
 
 
-@router.message(commands=['alive'], state=None)
+@router.message(commands=['alive'],
+                state=None,
+                flags={'long_operation': 'typing'})
 async def alive(message: types.Message,
                 command: CommandObject,
                 alive_helper: AliveHelper):
