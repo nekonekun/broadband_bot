@@ -29,6 +29,10 @@ parser = ArgumentParser(
 
 group = parser.add_argument_group('Bot')
 group.add_argument('--token', '-t', help='Bot token', required=True)
+group.add_argument('--allowed-chats',
+                   help='If specified: only messages from specified chat '
+                        'participants will be processed. Comma-separated',
+                   required=False)
 
 group = parser.add_argument_group('FTP')
 group.add_argument('--ftp-host', help='FTP host', required=True)
@@ -68,17 +72,22 @@ def main():
     zabbix_password = args.zabbix_password
     zabbix_api = ZabbixAPI(zabbix_url, zabbix_username, zabbix_password)
     usage_helper = UsageHelper(userside_api, zabbix_api)
+    allowed_chats = args.allowed_chats
+    if allowed_chats:
+        allowed_chats = allowed_chats.split(',')
     setproctitle(os.path.basename(sys.argv[0]))
     asyncio.run(bot_main(token=token,
                          ftp_helper=ftp_helper,
                          alive_helper=alive_helper,
-                         usage_helper=usage_helper))
+                         usage_helper=usage_helper,
+                         allowed_chats=allowed_chats))
 
 
 async def bot_main(token: str,
                    ftp_helper: FTPHelper,
                    alive_helper: AliveHelper,
-                   usage_helper: UsageHelper):
+                   usage_helper: UsageHelper,
+                   allowed_chats: list | None):
     bot = Bot(token=token, parse_mode='html')
     dp = Dispatcher(storage=MemoryStorage())
 
@@ -88,8 +97,11 @@ async def bot_main(token: str,
 
     dp.message.middleware(middlewares.ChatActionMiddleware())
     dp.message.middleware(middlewares.LoggingMiddleware())
+    if allowed_chats:
+        dp.message.outer_middleware(middlewares.AccessMiddleware())
 
     await dp.start_polling(bot,
                            ftp_helper=ftp_helper,
                            alive_helper=alive_helper,
-                           usage_helper=usage_helper)
+                           usage_helper=usage_helper,
+                           allowed_chats=allowed_chats)
