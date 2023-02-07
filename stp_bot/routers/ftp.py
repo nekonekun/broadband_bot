@@ -2,7 +2,8 @@ from aiogram import Router, types
 from aiogram.filters.command import CommandObject
 from aiogram.types import BufferedInputFile
 from asyncio.exceptions import TimeoutError
-from stp_bot.services.ftp import FTPHelper
+
+from ..services.ftp import FTPHelper
 
 router = Router()
 

@@ -1,6 +1,6 @@
-import logging
 from aiogram import BaseMiddleware
 from aiogram.types import Message
+import logging
 from typing import Callable, Awaitable, Any
 
 

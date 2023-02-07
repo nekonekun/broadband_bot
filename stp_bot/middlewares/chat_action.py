@@ -1,8 +1,8 @@
 from aiogram import BaseMiddleware
 from aiogram.dispatcher.flags import get_flag
 from aiogram.types import Message
-from typing import Callable, Awaitable, Any
 from aiogram.utils.chat_action import ChatActionSender
+from typing import Callable, Awaitable, Any
 
 
 class ChatActionMiddleware(BaseMiddleware):

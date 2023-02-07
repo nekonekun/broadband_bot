@@ -1,19 +1,20 @@
-from configargparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-from setproctitle import setproctitle
-import os
-import sys
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-import logging
 import asyncio
+from configargparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+import logging
+import os
+from setproctitle import setproctitle
+import sys
 
-import stp_bot.routers as routers
-import stp_bot.middlewares as middlewares
-from stp_bot.services.ftp import FTPHelper
-from stp_bot.services.userside import UsersideAPI
-from stp_bot.services.alive import AliveHelper
-from stp_bot.services.zabbix import ZabbixAPI
-from stp_bot.services.usage import UsageHelper
+
+import middlewares as middlewares
+import routers as routers
+from .services.ftp import FTPHelper
+from .services.userside import UsersideAPI
+from .services.alive import AliveHelper
+from .services.zabbix import ZabbixAPI
+from .services.usage import UsageHelper
 
 logging.basicConfig(level=logging.INFO)
 

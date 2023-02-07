@@ -1,6 +1,6 @@
-import datetime
 import aioftp
 from dataclasses import dataclass
+import datetime
 
 
 @dataclass

@@ -2,8 +2,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 import re
 
-from stp_bot.services.userside import UsersideAPI
-from stp_bot.services.zabbix import ZabbixAPI
+from .userside import UsersideAPI
+from .zabbix import ZabbixAPI
 
 
 @dataclass

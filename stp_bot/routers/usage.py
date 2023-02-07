@@ -1,6 +1,8 @@
 from aiogram import Router, types
 from aiogram.filters.command import CommandObject
-from stp_bot.services.usage import UsageHelper
+
+from ..services.usage import UsageHelper
+
 router = Router()
 
 

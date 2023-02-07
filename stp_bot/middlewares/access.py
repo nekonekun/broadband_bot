@@ -1,8 +1,8 @@
+from aiogram import BaseMiddleware, Bot
 import aiogram.exceptions
-from aiogram import BaseMiddleware, Bot, Dispatcher
 from aiogram.types import Message
-from typing import Callable, Awaitable, Any
 import logging
+from typing import Callable, Awaitable, Any
 
 
 class AccessMiddleware(BaseMiddleware):

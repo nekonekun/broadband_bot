@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from dataclasses import dataclass
-from stp_bot.services.userside import UsersideAPI
+
+from .userside import UsersideAPI
 
 
 @dataclass
