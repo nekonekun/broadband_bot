@@ -8,13 +8,17 @@ from setproctitle import setproctitle
 import sys
 
 
-import middlewares as middlewares
-import routers as routers
+from .middlewares.access import AccessMiddleware
+from .middlewares.chat_action import ChatActionMiddleware
+from .middlewares.log import LoggingMiddleware
 from .services.ftp import FTPHelper
 from .services.userside import UsersideAPI
 from .services.alive import AliveHelper
 from .services.zabbix import ZabbixAPI
 from .services.usage import UsageHelper
+from .routers.alive import router as alive_router
+from .routers.ftp import router as ftp_router
+from .routers.usage import router as usage_router
 
 logging.basicConfig(level=logging.INFO)
 
@@ -92,14 +96,14 @@ async def bot_main(token: str,
     bot = Bot(token=token, parse_mode='html')
     dp = Dispatcher(storage=MemoryStorage())
 
-    dp.include_router(routers.ftp_router)
-    dp.include_router(routers.alive_router)
-    dp.include_router(routers.usage_router)
+    dp.include_router(ftp_router)
+    dp.include_router(alive_router)
+    dp.include_router(usage_router)
 
-    dp.message.middleware(middlewares.ChatActionMiddleware())
-    dp.message.middleware(middlewares.LoggingMiddleware())
+    dp.message.middleware(ChatActionMiddleware())
+    dp.message.middleware(LoggingMiddleware())
     if allowed_chats:
-        dp.message.outer_middleware(middlewares.AccessMiddleware())
+        dp.message.outer_middleware(AccessMiddleware())
 
     await dp.start_polling(bot,
                            ftp_helper=ftp_helper,
