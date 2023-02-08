@@ -31,7 +31,7 @@ class ZabbixAPI:
         body = {
             'jsonrpc': '2.0',
             'method': method,
-            'params': params,
+            'params': params or [],
             'id': self._id,
         }
         if method not in MAGIC_NO_AUTH_METHODS:
@@ -60,28 +60,15 @@ class ZabbixAPI:
             }
             self._session = aiohttp.ClientSession(headers=headers)
             self._id = str(uuid.uuid1())
-            body = self._make_request_body(
-                method='user.login',
-                params={'user': self._username,
-                        'password': self._password}
-            )
-            async with self._session.post(self._url, json=body) as response:
-                content = await response.json()
-            self._auth = content['result']
+            self._auth = await self.user.login(username=self._username,
+                                               password=self._password)
         self._in_use += 1
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         self._in_use -= 1
         if (self._in_use == 0) and self._session:
-            body = {
-                "jsonrpc": "2.0",
-                "method": "user.logout",
-                "params": [],
-                "id": 1,
-                "auth": self._auth
-            }
-            await self._session.post(self._url, json=body)
+            await self.user.logout()
             await self._session.close()
             self._session = None
             self._auth = None
