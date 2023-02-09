@@ -41,16 +41,18 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: Implementation :: CPython',
         'Natural Language :: Russian',
     ],
     python_requires='>=3.10',
     packages=find_packages(exclude=['tests']),
     install_requires=load_requirements('requirements.txt'),
+    extras_require={
+        "test": ["pytest", "pytest-mock",
+                 "pytest-aiohttp", "pytest-localftpserver"],
+    },
     entry_points={
         'console_scripts': [
-            'stp_bot = stp_bot.__main__:main'.format(module_name),
-
+            'stp_bot = stp_bot.__main__:main',
         ]
     },
     include_package_data=True
