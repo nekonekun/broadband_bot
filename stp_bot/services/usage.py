@@ -103,20 +103,43 @@ class UsageHelper:
                 if neighbor['object_type'] != 'switch':
                     continue
                 neighbors.append(neighbor['object_id'])
-            if not neighbors:
-                return
-            neighbors = set(neighbors)
-            if len(neighbors) > 1:
-                return
-            async with self.userside_api:
-                neighbor_id = str(neighbors.pop())
-                neighbor_data = await self.userside_api.device.get_data(
-                    object_type='switch',
-                    object_id=neighbor_id,
-                    is_hide_ifaces_data=1,
-                )
+            if neighbors:
+                neighbors = set(neighbors)
+                if len(neighbors) > 1:
+                    return
+                async with self.userside_api:
+                    neighbor_id = str(neighbors.pop())
+                    neighbor_data = await self.userside_api.device.get_data(
+                        object_type='switch',
+                        object_id=neighbor_id,
+                        is_hide_ifaces_data=1,
+                    )
                 neighbor_data = neighbor_data[neighbor_id]
                 ip = neighbor_data['host']
+            else:
+                neighbors = []
+                async with self.userside_api:
+                    ifaces_info = await self.userside_api.device.get_iface_info(
+                        id=device_id
+                    )
+                ifaces_info = ifaces_info['iface']
+                ifaces_info = {
+                    element['count']: element
+                    for element in ifaces_info
+                }
+                for interface in switch_info.interfaces:
+                    possible_uplink_iface_info = ifaces_info.get(
+                        interface.interface_number)
+                    ip_reg = re.search(
+                        r'mag_(.+)_up',
+                        possible_uplink_iface_info.get('ifAlias', ''))
+                    if not ip_reg:
+                        continue
+                    neighbors.append(ip_reg.group(1))
+                neighbors = list(set(neighbors))
+                if len(neighbors) != 1:
+                    return
+                ip = neighbors[0]
 
     async def get_switch_info(self, ip: str):
         async with self.userside_api:
