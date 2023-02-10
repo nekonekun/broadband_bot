@@ -30,7 +30,7 @@ setup(
     author_email=module.__email__,
     license=module.__license__,
     description=module.__doc__,
-    long_description=open('README.rst').read(),
+    long_description=open('README.md').read(),
     url='https://github.com/nekonekun/zabbix_etelecom_bot',
     platforms='all',
     classifiers=[
