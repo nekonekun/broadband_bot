@@ -39,8 +39,8 @@ class AliveHelper:
                                                           object_id=device_id)
         for interface in iface_info['iface']:
             number = str(interface['count'])
-            alias = interface['ifAlias']
-            if interface['ifOperStatus'] == 1:
+            alias = interface.get('ifAlias', '')
+            if interface.get('ifOperStatus', 0) == 1:
                 is_up = True
             else:
                 is_up = False
