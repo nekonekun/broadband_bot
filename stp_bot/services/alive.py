@@ -71,7 +71,7 @@ class AliveHelper:
                 is_recent = False
             else:
                 is_recent = True
-            if is_up or is_recent:
+            if is_up or is_recent or is_magistral:
                 new_alive_port = AlivePort(
                     number, alias, is_up, is_magistral,
                     latest_mac, latest_mac_date, latest_mac_vlan
