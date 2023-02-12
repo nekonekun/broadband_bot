@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from dataclasses import dataclass
-
+import logging
 from .userside import UsersideAPI
 
 
@@ -34,16 +34,30 @@ class AliveHelper:
             uplinks = device_data['uplink_iface'].split(',')
             dnlinks = device_data['dnlink_iface'].split(',')
             magistrals = uplinks + dnlinks
-            iface_info = await instance.device.get_iface_info(id=device_id)
             mac_list = await instance.device.get_mac_list(object_type='switch',
                                                           object_id=device_id)
-        for interface in iface_info['iface']:
-            number = str(interface['count'])
-            alias = interface.get('ifAlias', '')
-            if interface.get('ifOperStatus', 0) == 1:
-                is_up = True
+            is_online = device_data['is_online']
+            if is_online:
+                real_iface_info = await instance.device.get_iface_info(
+                    id=device_id)
+                real_iface_info = real_iface_info['iface']
+                real_iface_info = {
+                    interface['ifNumber']: interface
+                    for interface in real_iface_info
+                }
+        iface_info = list(device_data['ifaces'].values())
+        for interface in iface_info:
+            number = interface['ifNumber']
+            if is_online:
+                alias = real_iface_info[number].get('ifAlias', '')
+                if real_iface_info[number].get('ifOperStatus', 0) == 1:
+                    is_up = True
+                else:
+                    is_up = False
             else:
+                alias = ''
                 is_up = False
+            number = str(number)
             if number in magistrals:
                 is_magistral = True
             else:
