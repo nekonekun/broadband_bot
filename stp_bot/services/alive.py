@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from dataclasses import dataclass
-import logging
+
 from .userside import UsersideAPI
 
 
@@ -59,6 +59,8 @@ class AliveHelper:
                 is_up = False
             number = str(number)
             if number in magistrals:
+                is_magistral = True
+            elif 'mag_' in alias:
                 is_magistral = True
             else:
                 is_magistral = False
